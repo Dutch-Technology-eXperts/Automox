@@ -21,8 +21,8 @@ Remove-Item $env:systemroot\WindowsUpdate.log -ErrorAction SilentlyContinue
 
 #5. Resetting the Windows Update Services to default settings...
 
-"sc.exe sdset bits D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
-"sc.exe sdset wuauserv D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
+[void]("sc.exe sdset bits D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)")
+[void]("sc.exe sdset wuauserv D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)")
 
 Set-Location $env:systemroot\system32
 
@@ -70,8 +70,8 @@ REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v Pin
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v SusClientId /f
 
 #8) Resetting the WinSock...
-netsh winsock reset
-netsh winhttp reset proxy
+[void](netsh winsock reset)
+[void](netsh winhttp reset proxy)
 
 #9) Delete all BITS jobs...
 Get-BitsTransfer | Remove-BitsTransfer
@@ -93,6 +93,4 @@ Start-Service -Name cryptsvc
 #12) Forcing discovery...
 wuauclt /resetauthorization /detectnow
 
-if ($? -eq "True")
-{ Write-Output "Windows Update settings restored to default." }
-else {Write-Output "Failed to restore Windows Update settings to default" }
+Write-Output "Windows Update settings restored to default."
