@@ -1,3 +1,8 @@
+#Evaluation Code
+Exit 1
+
+#Remediation Code
+
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
 
 #1. Stopping Windows Update Services...
