@@ -11,6 +11,16 @@ Stop-Service -Name wuauserv
 Stop-Service -Name appidsvc
 Stop-Service -Name cryptsvc
 
+#1.1 Check if services are Stopped
+$Services = Get-WmiObject -Class win32_service -Filter "state = 'stop pending'"
+if ($Services) {
+foreach ($service in $Services) {
+{
+Stop-Process -Id $service.processid -Force -PassThru -ErrorAction Stop
+}
+}
+}
+
 #2. Remove QMGR Data file...
 Remove-Item "$env:allusersprofile\Microsoft\Network\Downloader\qmgr*.dat" -ErrorAction SilentlyContinue
 
