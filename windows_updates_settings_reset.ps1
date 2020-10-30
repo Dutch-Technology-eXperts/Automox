@@ -2,37 +2,46 @@
 Exit 1
 
 #Remediation Code
-
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
 
-#1. Stopping Windows Update Services...
-Stop-Service -Name BITS
-Stop-Service -Name wuauserv
-Stop-Service -Name appidsvc
-Stop-Service -Name cryptsvc
-
-#1.1 Check if services are Stopped
+#1.0 Check if services are stopping
 $Services = Get-WmiObject -Class win32_service -Filter "state = 'stop pending'"
 if ($Services) {
 foreach ($service in $Services) {
 {
-Stop-Process -Id $service.processid -Force -PassThru -ErrorAction Stop
+Stop-Process -Id $service.processid -Force -PassThru -ErrorAction SilentlyContinue
+}
+}
+}
+
+#1.1 Stopping Windows Update Services...
+Stop-Service -Name BITS 
+Stop-Service -Name wuauserv
+Stop-Service -Name appidsvc
+Stop-Service -Name cryptsvc
+
+#1.2 Check if services are stopping
+$Services = Get-WmiObject -Class win32_service -Filter "state = 'stop pending'"
+if ($Services) {
+foreach ($service in $Services) {
+{
+Stop-Process -Id $service.processid -Force -PassThru -ErrorAction SilentlyContinue
 }
 }
 }
 
 #2. Remove QMGR Data file...
-Remove-Item "$env:allusersprofile\Microsoft\Network\Downloader\qmgr*.dat" -ErrorAction SilentlyContinue
+Remove-Item "$env:allusersprofile\Microsoft\Network\Downloader\qmgr*.dat" -Force -ErrorAction SilentlyContinue
 
 #3. Renaming the Software Distribution and CatRoot Folder...
-Remove-Item $env:systemroot\SoftwareDistribution.bak -ErrorAction SilentlyContinue
-Rename-Item $env:systemroot\SoftwareDistribution SoftwareDistribution.bak -ErrorAction SilentlyContinue
+Remove-Item $env:systemroot\SoftwareDistribution.bak -Recurse -Force -ErrorAction SilentlyContinue
+Rename-Item $env:systemroot\SoftwareDistribution SoftwareDistribution.bak -Force -ErrorAction SilentlyContinue
 # This may not work if the folder is locked by having a contained file being accessed
-Remove-Item $env:systemroot\System32\Catroot2.bak -ErrorAction SilentlyContinue
-Rename-Item $env:systemroot\System32\Catroot2 catroot2.bak -ErrorAction SilentlyContinue
+Remove-Item $env:systemroot\System32\Catroot2.bak -Recurse -Force -ErrorAction SilentlyContinue
+Rename-Item $env:systemroot\System32\Catroot2 catroot2.bak -Force -ErrorAction SilentlyContinue
 
 #4. Removing old Windows Update log...
-Remove-Item $env:systemroot\WindowsUpdate.log -ErrorAction SilentlyContinue
+Remove-Item $env:systemroot\WindowsUpdate.log -Force -ErrorAction SilentlyContinue
 
 #5. Resetting the Windows Update Services to default settings...
 
