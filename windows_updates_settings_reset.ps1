@@ -57,42 +57,10 @@ Remove-Item $env:systemroot\WindowsUpdate.log -Force -ErrorAction SilentlyContin
 Set-Location $env:systemroot\system32
 
 #6. Registering some DLLs...
-regsvr32.exe /s atl.dll
-regsvr32.exe /s urlmon.dll
-regsvr32.exe /s mshtml.dll
-regsvr32.exe /s shdocvw.dll
-regsvr32.exe /s browseui.dll
-regsvr32.exe /s jscript.dll
-regsvr32.exe /s vbscript.dll
-regsvr32.exe /s scrrun.dll
-regsvr32.exe /s msxml.dll
-regsvr32.exe /s msxml3.dll
-regsvr32.exe /s msxml6.dll
-regsvr32.exe /s actxprxy.dll
-regsvr32.exe /s softpub.dll
-regsvr32.exe /s wintrust.dll
-regsvr32.exe /s dssenh.dll
-regsvr32.exe /s rsaenh.dll
-regsvr32.exe /s gpkcsp.dll
-regsvr32.exe /s sccbase.dll
-regsvr32.exe /s slbcsp.dll
-regsvr32.exe /s cryptdlg.dll
-regsvr32.exe /s oleaut32.dll
-regsvr32.exe /s ole32.dll
-regsvr32.exe /s shell32.dll
-regsvr32.exe /s initpki.dll
-regsvr32.exe /s wuapi.dll
-regsvr32.exe /s wuaueng.dll
-regsvr32.exe /s wuaueng1.dll
-regsvr32.exe /s wucltui.dll
-regsvr32.exe /s wups.dll
-regsvr32.exe /s wups2.dll
-regsvr32.exe /s wuweb.dll
-regsvr32.exe /s qmgr.dll
-regsvr32.exe /s qmgrprxy.dll
-regsvr32.exe /s wucltux.dll
-regsvr32.exe /s muweb.dll
-regsvr32.exe /s wuwebv.dll
+$dlls = @("atl.dll","urlmon.dll","mshtml.dll","shdocvw.dll","browseui.dll","jscript.dll","vbscript.dll","scrrun.dll","msxml.dll","msxml3.dll","msxml6.dll","actxprxy.dll","softpub.dll","wintrust.dll","dssenh.dll","rsaenh.dll","gpkcsp.dll","sccbase.dll","slbcsp.dll","cryptdlg.dll","oleaut32.dll","ole32.dll","shell32.dll","initpki.dll","wuapi.dll","wuaueng.dll","wuaueng1.dll","wucltui.dll","wups.dll","wups2.dll","wuweb.dll","qmgr.dll","qmgrprxy.dll","wucltux.dll","muweb.dll","wuwebv.dll")
+foreach($dll in $dlls){
+    regsvr32.exe /s $dll
+}
 
 #7) Removing WSUS client settings...
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v AccountDomainSid /f
