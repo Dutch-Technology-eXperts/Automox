@@ -5,10 +5,10 @@ Exit 1
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
 
 $windowsUpdateServices = @(
-    'BITS',
-    'wuauserv',
-    'appidsvc',
-    'cryptsvc'
+    "BITS",
+    "wuauserv",
+    "appidsvc",
+    "cryptsvc"
 )
 
 #1.0 Check if services are stopping
