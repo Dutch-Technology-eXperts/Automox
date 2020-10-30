@@ -4,6 +4,13 @@ Exit 1
 #Remediation Code
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
 
+$windowsUpdateServices = @(
+    'BITS',
+    'wuauserv',
+    'appidsvc',
+    'cryptsvc'
+)
+
 #1.0 Check if services are stopping
 $Services = Get-WmiObject -Class win32_service -Filter "state = 'stop pending'"
 if ($Services) {
@@ -15,10 +22,9 @@ Stop-Process -Id $service.processid -Force -PassThru -ErrorAction SilentlyContin
 }
 
 #1.1 Stopping Windows Update Services...
-Stop-Service -Name BITS 
-Stop-Service -Name wuauserv
-Stop-Service -Name appidsvc
-Stop-Service -Name cryptsvc
+foreach ($service in $windowsUpdateServices){
+    Stop-Service -Name $service
+}
 
 #1.2 Check if services are stopping
 $Services = Get-WmiObject -Class win32_service -Filter "state = 'stop pending'"
@@ -109,10 +115,9 @@ else{
 }
 
 #11) Starting Windows Update Services...
-Start-Service -Name BITS
-Start-Service -Name wuauserv
-Start-Service -Name appidsvc
-Start-Service -Name cryptsvc
+foreach ($service in $windowsUpdateServices){
+    Start-Service -Name $service
+}
 
 #12) Forcing discovery...
 wuauclt /resetauthorization /detectnow
