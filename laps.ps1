@@ -10,7 +10,9 @@ if (-Not $User)
 [void](net user /add $username $password)
 [void](net localgroup administrators $username /add)
     if ($? -eq "True")
-        { Write-Output "User successfully created." }
+        { 
+        $Created = "yes"
+        Write-Output "User successfully created." }
     else {Write-Output "Failed to create user!" }
 }
 Else {Write-Output "User already exists." }
@@ -27,3 +29,11 @@ If(-Not $Installed) {
 else {
     Write-Output "LAPS client already installed."
     }
+
+if ($Created)
+{
+[void](net user administrator /active:no)
+     if ($? -eq "True")
+        { Write-Output "Default administrator account disabled." }
+    else {Write-Output "Failed to disable default administrator account!" }
+}
