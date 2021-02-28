@@ -1,4 +1,4 @@
-# Variables
+## Variables
 $apiKey = "" # API key
 $orgID = "" # Org ID from URL
 $currentMachineName = $env:COMPUTERNAME;
